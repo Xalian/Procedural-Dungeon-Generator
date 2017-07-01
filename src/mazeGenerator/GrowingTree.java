@@ -1,6 +1,6 @@
 package mazeGenerator;
 
-import dungeon.CellState;
+import dungeon.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -11,7 +11,7 @@ public class GrowingTree extends MazeGen {
     private List<Point> points;
 
     public GrowingTree(CellState[][] maze, GTtype type, int x, int y) {
-        this.maze = maze;
+        this.map = maze;
         this.type = type;
         Point start = new Point(x, y);
         points = new ArrayList<>();
@@ -49,7 +49,6 @@ public class GrowingTree extends MazeGen {
         Point next = getPoint(cur, dirs.get(ThreadLocalRandom.current().nextInt(0, dirs.size())));
         carve(next);
         points.add(next);
-        return;
     }
 
     private Point getPoint(Point cur, Direction direction) {
@@ -79,16 +78,16 @@ public class GrowingTree extends MazeGen {
     private List<Direction> getAllValidNeighbours(Point cur) {
         List<Direction> dirs = new ArrayList<>();
         List<Direction> res = new ArrayList<>();
-        if (cur.y > 1 && maze[cur.y - 1][cur.x] == CellState.WALL) {
+        if (cur.y > 1 && map[cur.y - 1][cur.x] == CellState.WALL) {
             dirs.add(Direction.N);
         }
-        if (cur.y < maze.length - 2 && maze[cur.y + 1][cur.x] == CellState.WALL) {
+        if (cur.y < map.length - 2 && map[cur.y + 1][cur.x] == CellState.WALL) {
             dirs.add(Direction.S);
         }
-        if (cur.x < maze[cur.y].length - 2 && maze[cur.y][cur.x + 1] == CellState.WALL) {
+        if (cur.x < map[cur.y].length - 2 && map[cur.y][cur.x + 1] == CellState.WALL) {
             dirs.add(Direction.E);
         }
-        if (cur.x > 1 && maze[cur.y][cur.x - 1] == CellState.WALL) {
+        if (cur.x > 1 && map[cur.y][cur.x - 1] == CellState.WALL) {
             dirs.add(Direction.W);
         }
         for (Direction d : dirs) {
@@ -104,24 +103,22 @@ public class GrowingTree extends MazeGen {
         Point test;
         if (!(point.x == 0)) {
             test = getPoint(point, Direction.W);
-            if (maze[test.y][test.x] == CellState.OPEN) open++;
+            if (map[test.y][test.x] == CellState.OPEN) open++;
         }
-        if (!(point.x == maze[0].length - 1)) {
+        if (!(point.x == map[0].length - 1)) {
             test = getPoint(point, Direction.E);
-            if (maze[test.y][test.x] == CellState.OPEN) open++;
+            if (map[test.y][test.x] == CellState.OPEN) open++;
         }
         if (!(point.y == 0)) {
             test = getPoint(point, Direction.N);
-            if (maze[test.y][test.x] == CellState.OPEN) open++;
+            if (map[test.y][test.x] == CellState.OPEN) open++;
         }
-        if (!(point.y == maze.length -1 )) {
+        if (!(point.y == map.length -1 )) {
             test = getPoint(point, Direction.S);
-            if (maze[test.y][test.x] == CellState.OPEN) open++;
+            if (map[test.y][test.x] == CellState.OPEN) open++;
         }
         return open;
     }
 }
 
-enum Direction{
-    N,E,S,W
-}
+
