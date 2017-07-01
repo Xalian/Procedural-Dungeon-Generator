@@ -35,8 +35,6 @@ public class GrowingTree extends MazeGen {
                     cur = points.get(0);
                     break;
             }
-
-            //randomly select a valid direction and carve the next point
             dirs = this.getAllValidNeighbours(cur);
             if (dirs.isEmpty()) {
                 points.remove(cur);
@@ -78,6 +76,8 @@ public class GrowingTree extends MazeGen {
     private List<Direction> getAllValidNeighbours(Point cur) {
         List<Direction> dirs = new ArrayList<>();
         List<Direction> res = new ArrayList<>();
+
+        //Neighbours are valid if connecting them to the maze would only connect them to the current square
         if (cur.y > 1 && map[cur.y - 1][cur.x] == CellState.WALL) {
             dirs.add(Direction.N);
         }
@@ -101,6 +101,7 @@ public class GrowingTree extends MazeGen {
     private int pointGetNumOpenNeighbours(Point point) {
         int open = 0;
         Point test;
+        //Test points that aren't out of array bounds
         if (!(point.x == 0)) {
             test = getPoint(point, Direction.W);
             if (map[test.y][test.x] == CellState.OPEN) open++;
@@ -113,7 +114,7 @@ public class GrowingTree extends MazeGen {
             test = getPoint(point, Direction.N);
             if (map[test.y][test.x] == CellState.OPEN) open++;
         }
-        if (!(point.y == map.length -1 )) {
+        if (!(point.y == map.length - 1)) {
             test = getPoint(point, Direction.S);
             if (map[test.y][test.x] == CellState.OPEN) open++;
         }
