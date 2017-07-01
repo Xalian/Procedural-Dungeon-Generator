@@ -5,15 +5,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class GrowingTree extends MazeGen{
+public class GrowingTree extends MazeGen {
 
     private GTtype type;
     private List<Point> points;
 
-    GrowingTree(CellState[][] maze, GTtype type, int x, int y){
+    GrowingTree(CellState[][] maze, GTtype type, int x, int y) {
         this.maze = maze;
         this.type = type;
-        Point start = new Point(x,y);
+        Point start = new Point(x, y);
         points = new ArrayList<>();
         points.add(start);
         this.carve(start);
@@ -21,30 +21,33 @@ public class GrowingTree extends MazeGen{
 
     @Override
     public void nextStep() {
-        Point current = null;
+        Point cur = null;
         switch (type) {
             case RANDOM:
-                current = points.get(ThreadLocalRandom.current().nextInt(0, points.size()));
+                cur = points.get(ThreadLocalRandom.current().nextInt(0, points.size()));
                 break;
             case NEWEST:
-                current = points.get(points.size()-1);
+                cur = points.get(points.size() - 1);
                 break;
             case ELDEST:
-                current = points.get(0);
+                cur = points.get(0);
                 break;
         }
 
         //randomly select a valid direction and carve the next point
-        List<Direction> dirs = this.getAllValidNeighbours(current);
-        Point next = getPoint(current,dirs.get(ThreadLocalRandom.current().nextInt(0,dirs.size())));
+        List<Direction> dirs = this.getAllValidNeighbours(cur);
+        if (dirs.isEmpty()) {
+            this.finished = true;
+        }
+        Point next = getPoint(cur, dirs.get(ThreadLocalRandom.current().nextInt(0, dirs.size())));
         carve(next);
-        if(dirs.size() == 1){
-            points.remove(current);
+        if (dirs.size() == 1) {
+            points.remove(cur);
         }
         points.add(next);
     }
 
-    private Point getPoint(Point cur,Direction direction){
+    private Point getPoint(Point cur, Direction direction) {
         int x = 0;
         int y = 0;
         switch (direction) {
@@ -65,24 +68,52 @@ public class GrowingTree extends MazeGen{
                 y = cur.y;
                 break;
         }
-        return new Point(x,y);
+        return new Point(x, y);
     }
 
-    private List<Direction> getAllValidNeighbours(Point cur){
+    private List<Direction> getAllValidNeighbours(Point cur) {
         List<Direction> dirs = new ArrayList<>();
-        if(cur.y > 1 && maze[cur.y - 1][cur.x] == CellState.WALL){
+        List<Direction> res = new ArrayList<>();
+        if (cur.y > 1 && maze[cur.y - 1][cur.x] == CellState.WALL) {
             dirs.add(Direction.N);
         }
-        if(cur.y < maze.length && maze[cur.y + 1][cur.x] == CellState.WALL){
+        if (cur.y < maze.length && maze[cur.y + 1][cur.x] == CellState.WALL) {
             dirs.add(Direction.S);
         }
-        if(cur.x < maze[cur.y].length && maze[cur.y][cur.x + 1] == CellState.WALL){
+        if (cur.x < maze[cur.y].length && maze[cur.y][cur.x + 1] == CellState.WALL) {
             dirs.add(Direction.E);
         }
-        if(cur.x > 1 && maze[cur.y][cur.x - 1] == CellState.WALL){
+        if (cur.x > 1 && maze[cur.y][cur.x - 1] == CellState.WALL) {
             dirs.add(Direction.W);
         }
-        return dirs;
+        for (Direction d : dirs) {
+            if(!(pointGetNumOpenNeighbours(getPoint(cur,d)) > 1)){
+                res.add(d);
+            }
+        }
+        return res;
+    }
+
+    private int pointGetNumOpenNeighbours(Point point) {
+        int open = 0;
+        Point test;
+        if (!(point.x == 0)) {
+            test = getPoint(point, Direction.W);
+            if (maze[test.y][test.x] == CellState.OPEN) open++;
+        }
+        if (!(point.x == maze[0].length)) {
+            test = getPoint(point, Direction.E);
+            if (maze[test.y][test.x] == CellState.OPEN) open++;
+        }
+        if (!(point.y == 0)) {
+            test = getPoint(point, Direction.N);
+            if (maze[test.y][test.x] == CellState.OPEN) open++;
+        }
+        if (!(point.y == maze.length)) {
+            test = getPoint(point, Direction.S);
+            if (maze[test.y][test.x] == CellState.OPEN) open++;
+        }
+        return open;
     }
 }
 
