@@ -7,7 +7,6 @@ public class SimpleGrowingTreeDemo {
             for(int col = 0; col <maze[row].length; col++){
                 maze[row][col] = CellState.WALL;
             }
-
         }
         MazeGen gen =  new GrowingTree(maze,GTtype.NEWEST,1,1);
         gen.completeMaze();
@@ -20,7 +19,7 @@ public class SimpleGrowingTreeDemo {
                 else if(maze[row][col] == CellState.OPEN){
                     output.append(".");
                 }
-                else if(maze[row][col] == CellState.OPEN){
+                else if(maze[row][col] == CellState.ROOM_BORDER){
                     output.append("B");
                 }
             }
