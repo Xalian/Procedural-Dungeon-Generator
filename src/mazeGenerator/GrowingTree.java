@@ -10,7 +10,7 @@ public class GrowingTree extends MazeGen {
     private GTtype type;
     private List<Point> points;
 
-    GrowingTree(CellState[][] maze, GTtype type, int x, int y) {
+    public GrowingTree(CellState[][] maze, GTtype type, int x, int y) {
         this.maze = maze;
         this.type = type;
         Point start = new Point(x, y);
@@ -22,29 +22,34 @@ public class GrowingTree extends MazeGen {
     @Override
     public void nextStep() {
         Point cur = null;
-        switch (type) {
-            case RANDOM:
-                cur = points.get(ThreadLocalRandom.current().nextInt(0, points.size()));
-                break;
-            case NEWEST:
-                cur = points.get(points.size() - 1);
-                break;
-            case ELDEST:
-                cur = points.get(0);
-                break;
-        }
+        List<Direction> dirs = null;
+        while(dirs == null ||dirs.isEmpty()){
+            switch (type) {
+                case RANDOM:
+                    cur = points.get(ThreadLocalRandom.current().nextInt(0, points.size()));
+                    break;
+                case NEWEST:
+                    cur = points.get(points.size() - 1);
+                    break;
+                case ELDEST:
+                    cur = points.get(0);
+                    break;
+            }
 
-        //randomly select a valid direction and carve the next point
-        List<Direction> dirs = this.getAllValidNeighbours(cur);
-        if (dirs.isEmpty()) {
-            this.finished = true;
+            //randomly select a valid direction and carve the next point
+            dirs = this.getAllValidNeighbours(cur);
+            if (dirs.isEmpty()) {
+                points.remove(cur);
+                if(points.isEmpty()){
+                    this.finished = true;
+                    return;
+                }
+            }
         }
         Point next = getPoint(cur, dirs.get(ThreadLocalRandom.current().nextInt(0, dirs.size())));
         carve(next);
-        if (dirs.size() == 1) {
-            points.remove(cur);
-        }
         points.add(next);
+        return;
     }
 
     private Point getPoint(Point cur, Direction direction) {
@@ -77,10 +82,10 @@ public class GrowingTree extends MazeGen {
         if (cur.y > 1 && maze[cur.y - 1][cur.x] == CellState.WALL) {
             dirs.add(Direction.N);
         }
-        if (cur.y < maze.length && maze[cur.y + 1][cur.x] == CellState.WALL) {
+        if (cur.y < maze.length - 2 && maze[cur.y + 1][cur.x] == CellState.WALL) {
             dirs.add(Direction.S);
         }
-        if (cur.x < maze[cur.y].length && maze[cur.y][cur.x + 1] == CellState.WALL) {
+        if (cur.x < maze[cur.y].length - 2 && maze[cur.y][cur.x + 1] == CellState.WALL) {
             dirs.add(Direction.E);
         }
         if (cur.x > 1 && maze[cur.y][cur.x - 1] == CellState.WALL) {
@@ -101,7 +106,7 @@ public class GrowingTree extends MazeGen {
             test = getPoint(point, Direction.W);
             if (maze[test.y][test.x] == CellState.OPEN) open++;
         }
-        if (!(point.x == maze[0].length)) {
+        if (!(point.x == maze[0].length - 1)) {
             test = getPoint(point, Direction.E);
             if (maze[test.y][test.x] == CellState.OPEN) open++;
         }
@@ -109,16 +114,12 @@ public class GrowingTree extends MazeGen {
             test = getPoint(point, Direction.N);
             if (maze[test.y][test.x] == CellState.OPEN) open++;
         }
-        if (!(point.y == maze.length)) {
+        if (!(point.y == maze.length -1 )) {
             test = getPoint(point, Direction.S);
             if (maze[test.y][test.x] == CellState.OPEN) open++;
         }
         return open;
     }
-}
-
-enum GTtype{
-    RANDOM,ELDEST,NEWEST
 }
 
 enum Direction{
