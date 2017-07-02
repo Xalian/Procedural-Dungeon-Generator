@@ -1,5 +1,5 @@
 package dungeon;
 
 public enum CellState {
-    WALL,OPEN,ROOM_BORDER
+    WALL,OPEN,ROOM_BORDER,ROOM
 }
