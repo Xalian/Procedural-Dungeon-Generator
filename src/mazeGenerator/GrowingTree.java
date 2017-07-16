@@ -10,13 +10,16 @@ public class GrowingTree extends MazeGen {
     private GTtype type;
     private List<Point> points;
 
-    public GrowingTree(CellState[][] maze, GTtype type, int x, int y) {
-        this.map = maze;
+    public GrowingTree(CellState[][] map, GTtype type, int x, int y) {
+        this.map = map;
         this.type = type;
         Point start = new Point(x, y);
         points = new ArrayList<>();
         points.add(start);
-        this.carve(start);
+        if(disconnected(start)){
+            this.carve(start);
+        }
+
     }
 
     @Override
