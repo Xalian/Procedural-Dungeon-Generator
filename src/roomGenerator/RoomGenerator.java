@@ -57,16 +57,13 @@ public abstract class RoomGenerator {
     }
 
         }
-        else{
-            if(a.y > b.y){
-                int tmp = a.y;
-                a.y = b.y;
-                b.y = tmp;
-            }
-            int x = a.x;
-            for(int y = a.y; y < b.y + 1; y++) {
-                if (x >= 0 && x < map[y].length && y >= 0 && y < map.length) {
-                    map[y][x] = type;
+        if(se.x+2 >= map[0].length || se.y+2 >= map.length){
+            return true;
+        }
+        for(int curX = nw.x; curX < se.x + 1; curX++){
+            for(int curY = nw.y; curY < se.y + 1; curY++){
+                if(map[curY][curX]!= CellState.WALL){
+                    return true;
                 }
             }
         }
