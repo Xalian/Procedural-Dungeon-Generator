@@ -56,6 +56,12 @@ public abstract class RoomGenerator {
         }
     }
 
+
+    protected boolean intersects(Room room){
+        Point nw = room.getNorthWestCorner();
+        Point se = room.getSouthEastCorner();
+        if(nw.x-1 <= 0 || nw.y-1<= 0){
+            return true;
         }
         if(se.x+2 >= map[0].length || se.y+2 >= map.length){
             return true;
@@ -67,11 +73,7 @@ public abstract class RoomGenerator {
                 }
             }
         }
-    }
-
-    protected boolean intersects(Room room){
-        //TODO
-        return true;
+        return false;
     }
 
     public abstract void nextStep();
