@@ -24,6 +24,9 @@ public abstract class RoomGenerator {
     protected void carve(Point p){
         map[p.y][p.x] = CellState.ROOM;
     }
+    protected void carveB(Point p){
+        map[p.y][p.x] = CellState.ROOM_BORDER;
+    }
 
     protected void carveRoom(Room room){
         Point nw = room.getNorthWestCorner();
@@ -43,11 +46,15 @@ public abstract class RoomGenerator {
         Point se = room.getSouthEastCorner();
         se.x += 1;
         se.y += 1;
-        carveLine(nw,new Point(nw.x, se.y),CellState.ROOM_BORDER);
-        carveLine(nw,new Point(nw.y, se.x),CellState.ROOM_BORDER);
-        carveLine(se,new Point(nw.x, se.y),CellState.ROOM_BORDER);
-        carveLine(se,new Point(nw.y, se.x),CellState.ROOM_BORDER);
+        for(int curX = nw.x; curX < se.x + 1; curX++){
+            carveB(new Point(curX,nw.y));
+            carveB(new Point(curX,se.y));
         }
+        for(int curY = nw.y; curY < se.y + 1; curY++){
+            carveB(new Point(nw.x,curY));
+            carveB(new Point(se.x,curY));
+        }
+    }
 
     private void carveLine(Point a, Point b, CellState type) {
         if(a.y == b.y) {
