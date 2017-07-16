@@ -56,19 +56,6 @@ public abstract class RoomGenerator {
         }
     }
 
-    private void carveLine(Point a, Point b, CellState type) {
-        if(a.y == b.y) {
-            if(a.x > b.x){
-                int tmp = a.x;
-                a.x = b.x;
-                b.x = tmp;
-            }
-            int y = a.y;
-            for(int x = a.x; x < b.x + 1; x++) {
-                if (x >= 0 && x < map[y].length && y >= 0 && y < map.length) {
-                    map[y][x] = type;
-                }
-            }
         }
         else{
             if(a.y > b.y){
