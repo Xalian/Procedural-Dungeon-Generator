@@ -21,11 +21,8 @@ public abstract class RoomGenerator {
         return finished;
     }
 
-    protected void carve(Point p){
-        map[p.y][p.x] = CellState.ROOM;
-    }
-    protected void carveB(Point p){
-        map[p.y][p.x] = CellState.ROOM_BORDER;
+    protected void carve(Point p, CellState type){
+        map[p.y][p.x] = type;
     }
 
     protected void carveRoom(Room room){
@@ -34,7 +31,7 @@ public abstract class RoomGenerator {
 
         for(int curX = nw.x; curX < se.x + 1; curX++){
             for(int curY = nw.y; curY < se.y + 1; curY++){
-                carve(new Point(curX,curY));
+                carve(new Point(curX,curY), CellState.ROOM);
             }
         }
     }
@@ -47,12 +44,12 @@ public abstract class RoomGenerator {
         se.x += 1;
         se.y += 1;
         for(int curX = nw.x; curX < se.x + 1; curX++){
-            carveB(new Point(curX,nw.y));
-            carveB(new Point(curX,se.y));
+            carve(new Point(curX,nw.y), CellState.ROOM_BORDER);
+            carve(new Point(curX,se.y), CellState.ROOM_BORDER);
         }
         for(int curY = nw.y; curY < se.y + 1; curY++){
-            carveB(new Point(nw.x,curY));
-            carveB(new Point(se.x,curY));
+            carve(new Point(nw.x,curY), CellState.ROOM_BORDER);
+            carve(new Point(se.x,curY), CellState.ROOM_BORDER);
         }
     }
 
