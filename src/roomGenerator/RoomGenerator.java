@@ -53,7 +53,6 @@ public abstract class RoomGenerator {
         }
     }
 
-
     protected boolean intersects(Room room){
         Point nw = room.getNorthWestCorner();
         Point se = room.getSouthEastCorner();
